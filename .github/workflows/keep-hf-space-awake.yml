@@ -19,7 +19,7 @@ jobs:
 
     env:
       SPACE_URL: ${{ secrets.HUGGING_FACE_SPACE_URL }}
-      READY_TEXT: ${{ vars.HUGGING_FACE_READY_TEXT || 'Ask Assaad' }}
+      READY_TEXT: ${{ vars.HUGGING_FACE_READY_TEXT || 'Ask Assaad's' }}
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:

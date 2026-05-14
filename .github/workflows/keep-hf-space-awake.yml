@@ -1,0 +1,81 @@
+name: Keep Hugging Face Space Awake
+
+on:
+  schedule:
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-hf-space-awake
+  cancel-in-progress: false
+
+jobs:
+  check-space:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      SPACE_URL: ${{ secrets.HUGGING_FACE_SPACE_URL }}
+      READY_TEXT: ${{ vars.HUGGING_FACE_READY_TEXT || 'Ask Assaad' }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Install agent-browser
+        run: npm install -g agent-browser
+
+      - name: Install browser dependencies
+        run: agent-browser install --with-deps
+
+      - name: Open Space and capture screenshot
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "$SPACE_URL" ]; then
+            echo "HUGGING_FACE_SPACE_URL is not configured."
+            exit 1
+          fi
+
+          trap 'agent-browser screenshot page.png || true; agent-browser close || true' EXIT
+
+          agent-browser open "$SPACE_URL"
+          timeout 120s agent-browser wait --text "$READY_TEXT"
+          agent-browser screenshot page.png
+
+      - name: Upload screenshot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: huggingface-space-screenshot
+          path: page.png
+          if-no-files-found: ignore
+
+      - name: Notify Discord
+        if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "DISCORD_WEBHOOK_URL is not configured; skipping Discord notification."
+            exit 0
+          fi
+
+          message="Hugging Face Space check finished with status: ${JOB_STATUS}"
+
+          if [ -f page.png ]; then
+            curl --fail-with-body -sS -X POST \
+              -F "payload_json={\"content\":\"${message}\"}" \
+              -F "file1=@page.png;type=image/png" \
+              "$DISCORD_WEBHOOK_URL"
+          else
+            curl --fail-with-body -sS -X POST \
+              -H "Content-Type: application/json" \
+              -d "{\"content\":\"${message}\"}" \
+              "$DISCORD_WEBHOOK_URL"
+          fi

@@ -1,0 +1,93 @@
+ASSAAD EL HALABI - FULL RESUME AND PROFILE
+
+CONTACT
+Email: asaadalhalabi@gmail.com
+Phone: +5567996558081
+Website: assaadhalabi.com
+LinkedIn: linkedin.com/in/assaad-el-halabi-585b92197
+GitHub: github.com/AssaadHalabi
+Location: Brazil (Dourados, Mato Grosso do Sul)
+
+PROFESSIONAL SUMMARY
+Results-oriented Full-Stack and Forward Deployed Engineer with 5+ years of experience engineering, developing, and managing scalable backend services using Python, Node.js, TypeScript, Java and cloud infrastructure using AWS. Proven ability to lead development teams, implement robust CI/CD pipelines, and integrate complex systems including LLM-powered automation pipelines.
+
+EXPERIENCE
+
+Smarter Technologies (Thoughtful AI) | Forward Deployed Engineer | July 2025 - April 2026
+- Engineered custom backend solutions for complex healthcare workflows, including API orchestration and secure data transfer.
+- Embedded with provider teams to deploy Thoughtful's Revenue Cycle Automation platform using Python, RPA, and Django.
+- Designed LLM-powered automation pipelines cutting manual revenue cycle intervention by 70%+ across client deployments.
+- Built production observability tooling for RPA and ML workflows, enabling proactive issue detection and optimization.
+- Collaborated cross-functionally to tailor solutions to real operational needs in healthcare environments.
+- Led end-to-end deployments from code to delivery, handling configuration, troubleshooting, and optimization.
+- Built a custom credential load balancer using Robocorp with inter-process communication, tripling throughput on a $350k/day revenue workflow within a two-week sprint.
+
+Oreyeon | Software Engineer III | July 2022 - July 2025
+- Engineered robust containerized Node.js/Python microservices, achieving 99.9% SLA and reducing time-to-insight by 85%.
+- Automated 90%+ of manual batch-handling tasks via reusable microservices, cutting operational overhead by over 80 hrs/month.
+- Built end-to-end CI/CD pipelines with GitHub Actions and AWS CodePipeline, reducing deployment lead time by 60%.
+- Implemented CMMC Level 1 and 2 compliances across backend systems and cloud infrastructure.
+- Built a platform that accelerated team operations: batch assignment (20 min to 35 s), payment calculations (1 hr to 39 s).
+- Collaborated cross-functionally with product, ML, and ops teams to maintain 99.9% uptime for airport-critical applications.
+- Built an internal map-based visualization tool for Airport Operating Areas using React and PostGIS, which became a core part of daily safety inspections.
+- Worked in aviation security systems, building Python and Node.js microservices for airport operations teams.
+
+American University of Beirut (AUB) | Software Engineer | January 2021 - June 2022
+- Contributed to Khaddit Beirut initiative: automated data pre-processing and visualization pipelines in Python.
+- Developed a custom Django dashboard to explore blast-impact datasets, enabling dynamic filtering and geospatial insights.
+
+EDUCATION
+
+AWS Certified Developer - Associate | May 2025 - May 2028
+Credential ID: 7eb3bfd205b844ea990a13bfc6ffc910
+
+OnRamp Lebanon - Fast-Track to Senior Bootcamp | April 2024 - August 2024
+Intensive bootcamp focused on advanced software engineering practices, system design, and leadership skills.
+
+American University of Beirut (AUB) | September 2018 - February 2024
+MS in Computer Science (Full scholarship - MEPI)
+BS in Computer Science (Full scholarship - USAID)
+Master's Thesis: Arabic Conversational models powered by meta-learning and paraphrase-augmentation with little data (AraDialAug)
+
+PROJECTS
+
+CollaBoard (May 2024)
+Collaborative Whiteboard supporting real-time user interaction. OnRamp Bootcamp's final project. Built with WebSockets for real-time sync.
+
+AraDialAug (February 2024)
+Master's Thesis: Arabic Conversational models powered by meta-learning and paraphrase-augmentation with little data. Research into low-resource NLP.
+
+JSColab (April 2023)
+Zero-setup, notebook-style environment for JavaScript/React prototyping. Supports dynamic npm/CSS imports and markdown. Live at jscolab.com.
+
+Personal Automation Projects:
+- Built a scraper that monitored Brazilian identity (RG) appointment availability within 50km, saving 3 months of waiting by alerting when a closer slot opened.
+- Built a university course registration automation system.
+- Built a grade-checking system that polled for updates and sent email notifications when results were posted.
+- Built various event-driven automation systems throughout university.
+
+SKILLS
+
+Backend and APIs: Node.js, AWS Lambda, Django, FastAPI, Docker
+Databases: MySQL, PostgreSQL, PostGIS, SQL Server, AWS RDS, ChromaDB
+Cloud: AWS (Lambda, RDS, CodePipeline, EC2, S3), Azure
+CI/CD and DevOps: GitHub Actions, Jenkins, Docker, Kubernetes, Ansible, Docker Compose
+Programming Languages: Python, Java, JavaScript, TypeScript, C++, Bash
+AI/ML: LLM integration (Claude, OpenAI), RAG systems, RPA (Robocorp), prompt engineering, LangChain
+Tools: Git, Jira, ClickUp, Confluence, Slack, Terraform
+
+LANGUAGES
+Arabic: Native
+English: Proficient (C2)
+Portuguese: Proficient
+Spanish: Intermediate
+
+PERSONAL DETAILS
+Originally from Lebanon. Currently based in Dourados, Mato Grosso do Sul, Brazil.
+Authorized to work in Brazil. No visa sponsorship required.
+Available to start immediately (1 week notice).
+Open to remote roles globally.
+Salary expectations: $70,000 - $150,000 USD annually depending on role and company.
+
+WHAT ASSAAD IS LOOKING FOR
+Assaad is actively seeking Forward Deployed Engineer (FDE), Senior Backend Engineer, or Full-Stack Engineer roles at technology companies. He is particularly interested in companies building AI-powered products, developer tooling, healthcare technology, fintech, and infrastructure. He prefers remote roles but is open to hybrid arrangements. He values mission-driven work where engineering decisions have real consequences.

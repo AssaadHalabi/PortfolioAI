@@ -60,7 +60,8 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
     if overlap >= chunk_size:
         raise ValueError("overlap must be smaller than chunk_size")
 
-    sentences = [s.strip() for s in re.split(r"(?<=[.!?\n])\s+", text.strip()) if s.strip()]
+    sentences = [s.strip() for s in re.split(
+        r"(?<=[.!?\n])\s+", text.strip()) if s.strip()]
     chunks: list[str] = []
     current_sentences: list[str] = []
     current_length = 0
@@ -79,7 +80,8 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
 
         if current_sentences and current_length + word_count > chunk_size:
             chunks.append(" ".join(current_sentences))
-            current_sentences, current_length = overlap_tail(current_sentences, overlap)
+            current_sentences, current_length = overlap_tail(
+                current_sentences, overlap)
 
         current_sentences.append(sentence)
         current_length += word_count
@@ -94,7 +96,7 @@ def split_long_sentence(words: list[str], chunk_size: int, overlap: int) -> list
     chunks = []
     step = chunk_size - overlap
     for start in range(0, len(words), step):
-        window = words[start : start + chunk_size]
+        window = words[start: start + chunk_size]
         if window:
             chunks.append(" ".join(window))
     return chunks
@@ -149,7 +151,8 @@ def wait_until_ready(pc: Pinecone, index_name: str, timeout_seconds: int = 120) 
         print("Waiting for Pinecone index to be ready...")
         time.sleep(5)
 
-    raise TimeoutError(f"Pinecone index '{index_name}' was not ready after {timeout_seconds}s.")
+    raise TimeoutError(
+        f"Pinecone index '{index_name}' was not ready after {timeout_seconds}s.")
 
 
 def main() -> None:
@@ -183,7 +186,8 @@ def main() -> None:
     print(f"Split into {len(chunks)} chunks.")
     for index_number, chunk in enumerate(chunks):
         preview = chunk.replace("\n", " ")[:80]
-        print(f"  Chunk {index_number}: {len(chunk.split())} words - {preview}...")
+        print(
+            f"  Chunk {index_number}: {len(chunk.split())} words - {preview}...")
 
     print(f"\nLoading embedding model ({embed_model_name})...")
     model = SentenceTransformer(embed_model_name)
@@ -191,7 +195,8 @@ def main() -> None:
     print("Embedding chunks...")
     embeddings = model.encode(chunks, show_progress_bar=True)
     embedding_dimension = len(embeddings[0])
-    print(f"Generated {len(embeddings)} embeddings with {embedding_dimension} dimensions.")
+    print(
+        f"Generated {len(embeddings)} embeddings with {embedding_dimension} dimensions.")
 
     print("\nConnecting to Pinecone...")
     pc = Pinecone(api_key=pinecone_api_key)
@@ -237,15 +242,17 @@ def main() -> None:
 
     batch_size = 100
     for start in range(0, len(vectors), batch_size):
-        batch = vectors[start : start + batch_size]
+        batch = vectors[start: start + batch_size]
         upsert_args: dict[str, Any] = {"vectors": batch}
         if namespace:
             upsert_args["namespace"] = namespace
         index.upsert(**upsert_args)
-        print(f"Upserted batch {start // batch_size + 1} ({len(batch)} vectors).")
+        print(
+            f"Upserted batch {start // batch_size + 1} ({len(batch)} vectors).")
 
     stats = index.describe_index_stats()
-    print(f"\nDone. Pinecone index now contains {value_get(stats, 'total_vector_count', 0)} vectors.")
+    print(
+        f"\nDone. Pinecone index now contains {value_get(stats, 'total_vector_count', 0)} vectors.")
     print("You can now run app.py to start the Q&A interface.")
 
 

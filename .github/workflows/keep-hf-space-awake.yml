@@ -19,7 +19,7 @@ jobs:
 
     env:
       SPACE_URL: ${{ secrets.HUGGING_FACE_SPACE_URL }}
-      READY_TEXT: ${{ vars.HUGGING_FACE_READY_TEXT || "Ask Assaad's" }}
+      READY_TEXT: ${{ vars.HUGGING_FACE_READY_TEXT }}
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
@@ -41,8 +41,10 @@ jobs:
 
           trap 'agent-browser screenshot page.png || true; agent-browser close || true' EXIT
 
+          ready_text="${READY_TEXT:-Ask Assaad's}"
+
           agent-browser open "$SPACE_URL"
-          timeout 120s agent-browser wait --text "$READY_TEXT"
+          timeout 120s agent-browser wait --text "$ready_text"
           agent-browser screenshot page.png
 
       - name: Upload screenshot artifact

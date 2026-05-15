@@ -44,7 +44,7 @@ jobs:
           ready_text="${READY_TEXT:-Ask Assaad's}"
 
           agent-browser open "$SPACE_URL"
-          timeout 120s agent-browser wait --text "$ready_text"
+          timeout 200s agent-browser wait --text "$ready_text"
           agent-browser screenshot page.png
 
       - name: Upload screenshot artifact

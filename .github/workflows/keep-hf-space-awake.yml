@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: Install Playwright
-        run: npm install -g playwright
+        run: npm install --no-save --no-package-lock playwright
 
       - name: Install browser dependencies
-        run: playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
 
       - name: Open Space and capture screenshot
         shell: bash
@@ -39,10 +39,8 @@ jobs:
             exit 1
           fi
 
-          export NODE_PATH="$(npm root -g)"
-
-          node <<'NODE'
-          const { chromium } = require("playwright");
+          node --input-type=module <<'NODE'
+          import { chromium } from "playwright";
 
           const spaceUrl = process.env.SPACE_URL;
           const readyText = process.env.READY_TEXT || "Ask Assaad's";
@@ -71,29 +69,36 @@ jobs:
             throw new Error(`Timed out waiting for ready text: ${text}`);
           }
 
-          const browser = await chromium.launch();
-          const page = await browser.newPage({
-            viewport: { width: 1280, height: 720 },
-            deviceScaleFactor: 1,
-          });
-
-          try {
-            const response = await page.goto(spaceUrl, {
-              waitUntil: "domcontentloaded",
-              timeout: waitMs,
+          async function main() {
+            const browser = await chromium.launch();
+            const page = await browser.newPage({
+              viewport: { width: 1280, height: 720 },
+              deviceScaleFactor: 1,
             });
 
-            console.log(`Opened ${page.url()} with status ${response?.status() ?? "unknown"}`);
-            await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
-            await waitForReadyText(page, readyText);
-            await page.screenshot({ path: "page.png", fullPage: true });
-          } catch (error) {
-            console.error(error);
-            await page.screenshot({ path: "page.png", fullPage: true }).catch(() => {});
-            throw error;
-          } finally {
-            await browser.close();
+            try {
+              const response = await page.goto(spaceUrl, {
+                waitUntil: "domcontentloaded",
+                timeout: waitMs,
+              });
+
+              console.log(`Opened ${page.url()} with status ${response?.status() ?? "unknown"}`);
+              await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
+              await waitForReadyText(page, readyText);
+              await page.screenshot({ path: "page.png", fullPage: true });
+            } catch (error) {
+              console.error(error);
+              await page.screenshot({ path: "page.png", fullPage: true }).catch(() => {});
+              throw error;
+            } finally {
+              await browser.close();
+            }
           }
+
+          main().catch((error) => {
+            console.error(error);
+            process.exitCode = 1;
+          });
           NODE
 
       - name: Upload screenshot artifact

@@ -15,7 +15,7 @@ concurrency:
 jobs:
   check-space:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     env:
       SPACE_URL: ${{ secrets.HUGGING_FACE_SPACE_URL }}
@@ -23,11 +23,11 @@ jobs:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
-      - name: Install agent-browser
-        run: npm install -g agent-browser
+      - name: Install Playwright
+        run: npm install -g playwright
 
       - name: Install browser dependencies
-        run: agent-browser install --with-deps
+        run: playwright install --with-deps chromium
 
       - name: Open Space and capture screenshot
         shell: bash
@@ -39,13 +39,62 @@ jobs:
             exit 1
           fi
 
-          trap 'agent-browser screenshot page.png || true; agent-browser close || true' EXIT
+          export NODE_PATH="$(npm root -g)"
 
-          ready_text="${READY_TEXT:-Ask Assaad's}"
+          node <<'NODE'
+          const { chromium } = require("playwright");
 
-          agent-browser open "$SPACE_URL"
-          timeout 200s agent-browser wait --text "$ready_text"
-          agent-browser screenshot page.png
+          const spaceUrl = process.env.SPACE_URL;
+          const readyText = process.env.READY_TEXT || "Ask Assaad's";
+          const waitMs = 300_000;
+
+          async function bodyText(frame) {
+            return await frame.locator("body").innerText({ timeout: 1_000 }).catch(() => "");
+          }
+
+          async function waitForReadyText(page, text) {
+            const deadline = Date.now() + waitMs;
+
+            while (Date.now() < deadline) {
+              for (const frame of page.frames()) {
+                const textContent = await bodyText(frame);
+
+                if (textContent.includes(text)) {
+                  console.log(`Ready text found in ${frame.url() || "main frame"}`);
+                  return;
+                }
+              }
+
+              await page.waitForTimeout(2_000);
+            }
+
+            throw new Error(`Timed out waiting for ready text: ${text}`);
+          }
+
+          const browser = await chromium.launch();
+          const page = await browser.newPage({
+            viewport: { width: 1280, height: 720 },
+            deviceScaleFactor: 1,
+          });
+
+          try {
+            const response = await page.goto(spaceUrl, {
+              waitUntil: "domcontentloaded",
+              timeout: waitMs,
+            });
+
+            console.log(`Opened ${page.url()} with status ${response?.status() ?? "unknown"}`);
+            await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
+            await waitForReadyText(page, readyText);
+            await page.screenshot({ path: "page.png", fullPage: true });
+          } catch (error) {
+            console.error(error);
+            await page.screenshot({ path: "page.png", fullPage: true }).catch(() => {});
+            throw error;
+          } finally {
+            await browser.close();
+          }
+          NODE
 
       - name: Upload screenshot artifact
         if: always()

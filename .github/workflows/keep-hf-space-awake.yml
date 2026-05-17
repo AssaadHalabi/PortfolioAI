@@ -69,6 +69,24 @@ jobs:
             throw new Error(`Timed out waiting for ready text: ${text}`);
           }
 
+          async function clickRestartIfSleeping(page) {
+            for (const frame of page.frames()) {
+              const restart = frame
+                .locator("button, a")
+                .filter({ hasText: /^Restart this Space$/ })
+                .first();
+
+              if (await restart.isVisible({ timeout: 1_000 }).catch(() => false)) {
+                console.log(`Restart button found in ${frame.url() || "main frame"}`);
+                await restart.click();
+                await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
+                return true;
+              }
+            }
+
+            return false;
+          }
+
           async function main() {
             const browser = await chromium.launch();
             const page = await browser.newPage({
@@ -84,6 +102,7 @@ jobs:
 
               console.log(`Opened ${page.url()} with status ${response?.status() ?? "unknown"}`);
               await page.waitForLoadState("networkidle", { timeout: 60_000 }).catch(() => {});
+              await clickRestartIfSleeping(page);
               await waitForReadyText(page, readyText);
               await page.screenshot({ path: "page.png", fullPage: true });
             } catch (error) {
